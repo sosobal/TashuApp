@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     protected TextView tvRecog, TextVoice;
 
     protected TextToSpeech tts;
-    private static final int CODE_CONTACT = 1529, CODE_CALL = 1333, CODE_CALL1 = 1444, CODE_CALL2 = 1555;
+    private static final int CODE_CALL = 1333, CODE_CALL1 = 1444, CODE_CALL2 = 1555;
     protected boolean bService = false;
     protected TelephonyManager telephonyManager;
     protected CommstateListener commStateListener;
@@ -100,18 +100,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (requestCode == CODE_CONTACT) {
-                String[] sFilter = new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                        ContactsContract.CommonDataKinds.Phone.NUMBER};
-                Cursor cursor = getContentResolver().query(data.getData(), sFilter, null, null, null);
-                if (cursor != null) {
-                    cursor.moveToFirst();
-                    String sName = cursor.getString(0);
-                    String sPhoneNum = cursor.getString(1);
-                    cursor.close();
-                    Toast.makeText(this, sName + " = " + sPhoneNum, Toast.LENGTH_LONG).show();
-                }
-            } else if (requestCode == CODE_CALL) {
+            if (requestCode == CODE_CALL) {
                 ArrayList<String> arList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 String str = arList.get(0);
                 if (str.equals("전화 걸기") == true) {
@@ -166,16 +155,5 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        telephonyManager.listen(commStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-    }
-
-    @Override
-    protected void onPause() {
-        telephonyManager.listen(commStateListener, PhoneStateListener.LISTEN_NONE);
-        super.onPause();
-    }
 }
 

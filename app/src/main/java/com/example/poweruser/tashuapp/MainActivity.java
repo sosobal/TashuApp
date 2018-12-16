@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     protected TextView tvRecog, TextVoice;
 
     protected TextToSpeech tts;
-    private static final int CODE_CONNECT = 1111, CODE_CALL1 = 2222, CODE_CALL2 = 3333, CODE_SMS=4444;
+    private static final int CODE_CONNECT = 1111, CODE_CALL1 = 2222, CODE_CALL2 = 3333, CODE_SMS1=4444, CODE_SMS2=5555;
     protected boolean bService = false;
     private String Name;
 
@@ -104,31 +104,23 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                         e.printStackTrace();
                     }
                     voiceRecog(CODE_CALL1);
-                } else if(str.equals("문자 하기") == true) {
+                } else if (str.equals("문자 하기") == true) {
                     speakStr("누구에게 문자 할까요");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    voiceRecog(CODE_CALL1);
+                    voiceRecog(CODE_SMS1);
                 }
 
-            } else if (requestCode == CODE_CALL1) {
+            }else if (requestCode == CODE_CALL1) {
                 ArrayList<String> arList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 Name = arList.get(0);
                 tvRecog.setText(Name);
 
                 if (Name.equals(Name) == true) {
-                    speakStr(Name + "에게 전화를 걸까요?");
-                    voiceRecog(CODE_CALL2);
-                }
-
-            } else if (requestCode == CODE_CALL2) {
-                ArrayList<String> arList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                String str = arList.get(0);
-                if (str.equals("예") == true) {
-
+                    speakStr(Name + "에게 전화를 연결합니다");
                     Toast.makeText(getApplicationContext(), Name, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + getPhoneNumFromName(Name)));
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -143,6 +135,29 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                     }
                     startActivity(intent);
                 }
+
+            } else if (requestCode == CODE_SMS1) {
+                ArrayList<String> arList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                Name = arList.get(0);
+                tvRecog.setText(Name);
+
+                if (Name.equals(Name) == true) {
+                    speakStr(Name + "에게 문자 보낼 수 있도록 연결합니다");
+                    Toast.makeText(getApplicationContext(), Name, Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:" + getPhoneNumFromName(Name)));
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                    startActivity(intent);
+                }
+
             }
         }
     }

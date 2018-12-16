@@ -12,8 +12,6 @@ import android.speech.tts.TextToSpeech;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,10 +24,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     protected TextView tvRecog, TextVoice;
 
     protected TextToSpeech tts;
-    private static final int CODE_CALL = 1333, CODE_CALL1 = 1444, CODE_CALL2 = 1555;
+    private static final int CODE_CONNECT = 1111, CODE_CALL1 = 2222, CODE_CALL2 = 3333, CODE_SMS=4444;
     protected boolean bService = false;
-    protected TelephonyManager telephonyManager;
-    protected CommstateListener commStateListener;
     private String Name;
 
     @Override
@@ -40,9 +36,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         tvRecog = (TextView) findViewById(R.id.tvRecog);
         tts = new TextToSpeech(this, this);
 
-        telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        commStateListener = new CommstateListener(telephonyManager, this);
-
         TextVoice = (TextView) findViewById(R.id.TextVoice);
         btcall = (Button) findViewById(R.id.btcall);
         btcall.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 String hello = TextVoice.getText().toString();
                 speakStr(hello);
 
-                voiceRecog(CODE_CALL);
+                voiceRecog(CODE_CONNECT);
             }
         });
 
@@ -100,11 +93,19 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK && data != null) {
-            if (requestCode == CODE_CALL) {
+            if (requestCode == CODE_CONNECT) {
                 ArrayList<String> arList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                 String str = arList.get(0);
                 if (str.equals("전화 걸기") == true) {
                     speakStr("누구에게 전화 걸까요");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    voiceRecog(CODE_CALL1);
+                } else if(str.equals("문자 하기") == true) {
+                    speakStr("누구에게 문자 할까요");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

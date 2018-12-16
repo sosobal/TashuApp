@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 public class PhoneCallService extends Service {
     protected PhoneCallReceiver phoneCallReceiver;  // Outgoing
-    protected CommstateListener commStateListener;  // Receiving
     protected TelephonyManager telephonyManager;
 
     public PhoneCallService() {
@@ -25,8 +24,6 @@ public class PhoneCallService extends Service {
         intentFilter = new IntentFilter(Intent.ACTION_CALL_BUTTON);
         registerReceiver(phoneCallReceiver, intentFilter);
         telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-        commStateListener = new CommstateListener(telephonyManager, this);
-        telephonyManager.listen(commStateListener, PhoneStateListener.LISTEN_CALL_STATE);
     }
 
     @Override
@@ -39,7 +36,6 @@ public class PhoneCallService extends Service {
     public void onDestroy() {
         Toast.makeText(this, "Service stopped.", Toast.LENGTH_SHORT).show();
         unregisterReceiver(phoneCallReceiver);
-        telephonyManager.listen(commStateListener, PhoneStateListener.LISTEN_NONE);
         super.onDestroy();
     }
 

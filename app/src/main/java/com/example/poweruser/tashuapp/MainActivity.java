@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
-    protected Button btcall;
+    protected Button btConnect;
     protected TextView tvRecog, TextVoice;
 
     protected TextToSpeech tts;
@@ -37,8 +37,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         tts = new TextToSpeech(this, this);
 
         TextVoice = (TextView) findViewById(R.id.TextVoice);
-        btcall = (Button) findViewById(R.id.btcall);
-        btcall.setOnClickListener(new View.OnClickListener() {
+        btConnect = (Button) findViewById(R.id.btConnect);
+        btConnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String hello = TextVoice.getText().toString();
